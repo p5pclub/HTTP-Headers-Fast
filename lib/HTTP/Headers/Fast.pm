@@ -3,10 +3,13 @@ use strict;
 use warnings;
 use 5.00800;
 use Carp ();
+use XSLoader;
 
 our $VERSION = '0.18';
 
 our $TRANSLATE_UNDERSCORE = 1;
+
+XSLoader::load( 'HTTP::Headers::Fast', $VERSION );
 
 # "Good Practice" order of HTTP message headers:
 #    - General-Headers

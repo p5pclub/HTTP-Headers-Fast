@@ -12,7 +12,7 @@ MANIFEST.bak
 
 Makefile
 inc/
-ppport.h
+#ppport.h
 *.sw[po]
 *.bak
 *.old
