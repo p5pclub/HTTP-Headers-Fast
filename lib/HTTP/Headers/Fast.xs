@@ -12,7 +12,6 @@ typedef struct {
     HV *cache;
 } my_cxt_t;
 
-
 START_MY_CXT;
 
 MODULE = HTTP::Headers::Fast		PACKAGE = HTTP::Headers::Fast
@@ -31,6 +30,7 @@ _standardize_field_name( char *field )
         SV *TRANSLATE_UNDERSCORE = get_sv(
             "HTTP::Headers::Fast::TRANSLATE_UNDERSCORE", 0
         );
+        SV **cache_field;
         dMY_CXT;
     CODE:
         /* underscores to dashes */
@@ -43,7 +43,7 @@ _standardize_field_name( char *field )
                     field[i] = '-';
 
         /* check the cache */
-        SV **cache_field = hv_fetch( MY_CXT.cache, field, strlen(field), 1 );
+        cache_field = hv_fetch( MY_CXT.cache, field, strlen(field), 1 );
         if (!cache_field) {
             croak("Cannot create cache for fields");
         } else if ( SvOK(*cache_field) ) {
