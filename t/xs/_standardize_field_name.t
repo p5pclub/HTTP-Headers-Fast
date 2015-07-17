@@ -24,4 +24,13 @@ can_ok( HTTP::Headers::Fast::, '_standardize_field_name' );
     );
 }
 
+{
+    $HTTP::Headers::Fast::TRANSLATE_UNDERSCORE = 0;
+    is(
+        HTTP::Headers::Fast::_standardize_field_name('hello_world_'),
+        'hello_world_',
+        'Test that caching works (as much as we can)',
+    );
+}
+
 done_testing;
