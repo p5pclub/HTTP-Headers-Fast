@@ -31,6 +31,7 @@ _standardize_field_name( char *field )
             "HTTP::Headers::Fast::TRANSLATE_UNDERSCORE", 0
         );
         SV **cache_field;
+        char *orig;
         dMY_CXT;
     CODE:
         /* underscores to dashes */
@@ -50,6 +51,14 @@ _standardize_field_name( char *field )
             RETVAL = SvPV_nolen(*cache_field);
             return;
         }
+
+        /* make a copy to represent the original one */
+        orig = (char *) malloc( strlen(field) );
+        strcpy( orig, field );
+
+        /* lc */
+        for ( i = 0; i < strlen(field); i++ )
+            field[i] = tolower( field[i] );
 
         sv_setpv( *cache_field, field );
 
