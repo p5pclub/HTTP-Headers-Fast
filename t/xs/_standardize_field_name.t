@@ -7,7 +7,7 @@ BEGIN { use_ok('HTTP::Headers::Fast') }
 can_ok( HTTP::Headers::Fast::, '_standardize_field_name' );
 
 {
-    $HTTP::Headers::Fast::TRANSLATE_UNDERSCORE = 1;
+    local $HTTP::Headers::Fast::TRANSLATE_UNDERSCORE = 1;
     is(
         HTTP::Headers::Fast::_standardize_field_name('hello_world_'),
         'hello-world-',
@@ -16,7 +16,7 @@ can_ok( HTTP::Headers::Fast::, '_standardize_field_name' );
 }
 
 {
-    $HTTP::Headers::Fast::TRANSLATE_UNDERSCORE = 0;
+    local $HTTP::Headers::Fast::TRANSLATE_UNDERSCORE = 0;
     is(
         HTTP::Headers::Fast::_standardize_field_name('hello_world_'),
         'hello_world_',
@@ -25,11 +25,17 @@ can_ok( HTTP::Headers::Fast::, '_standardize_field_name' );
 }
 
 {
-    $HTTP::Headers::Fast::TRANSLATE_UNDERSCORE = 0;
+    local $HTTP::Headers::Fast::TRANSLATE_UNDERSCORE = 0;
     is(
-        HTTP::Headers::Fast::_standardize_field_name('hello_world_'),
+        HTTP::Headers::Fast::_standardize_field_name('Hello_WorlD_'),
         'hello_world_',
         'Test that caching works (as much as we can)',
+    );
+
+    is(
+        $HTTP::Headers::Fast::standard_case{'hello_world_'},
+        'Hello_World_',
+        'Set up standard_case in original header value correctly',
     );
 }
 
