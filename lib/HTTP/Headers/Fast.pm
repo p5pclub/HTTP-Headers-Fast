@@ -9,7 +9,10 @@ our $VERSION = '0.18';
 
 our $TRANSLATE_UNDERSCORE = 1;
 
-XSLoader::load( 'HTTP::Headers::Fast', $VERSION );
+eval {
+    no warnings qw<redefine once>;
+    XSLoader::load( 'HTTP::Headers::Fast', $VERSION );
+};
 
 # "Good Practice" order of HTTP message headers:
 #    - General-Headers
