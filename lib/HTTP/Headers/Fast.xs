@@ -45,7 +45,7 @@ _standardize_field_name( char *field )
         /* check the cache */
         SV **cache_field = hv_fetch( MY_CXT.cache, field, strlen(field), 1 );
         if (!cache_field) {
-            warn("Cannot create cache for fields");
+            croak("Cannot create cache for fields");
         } else if ( SvOK(*cache_field) ) {
             RETVAL = SvPV_nolen(*cache_field);
             return;
