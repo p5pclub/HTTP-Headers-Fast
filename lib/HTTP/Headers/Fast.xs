@@ -35,33 +35,35 @@ _standardize_field_name( char *field )
         );
         SV **cache_field;
         char *orig;
+        int len;
         dMY_CXT;
     CODE:
         /* underscores to dashes */
         if (!TRANSLATE_UNDERSCORE)
             croak("$TRANSLATE_UNDERSCORE variable does not exist");
 
+        len = strlen(field);
         if ( SvOK(TRANSLATE_UNDERSCORE) && SvTRUE(TRANSLATE_UNDERSCORE) )
-            for ( i = 0; i < strlen(field); i++ )
+            for ( i = 0; i < len; i++ )
                 if ( field[i] == '_' )
                     field[i] = '-';
 
         /* check the cache */
-        cache_field = hv_fetch( MY_CXT.cache, field, strlen(field), 0 );
+        cache_field = hv_fetch( MY_CXT.cache, field, len, 0 );
         if ( cache_field && SvOK(*cache_field) )
             XSRETURN_PV( SvPV_nolen(*cache_field) );
 
         /* make a copy to represent the original one */
-        orig = (char *) malloc( strlen(field) );
+        orig = (char *) malloc(len);
         strcpy( orig, field );
 
         /* lc */
-        for ( i = 0; i < strlen(field); i++ )
+        for ( i = 0; i < len; i++ )
             field[i] = tolower( field[i] );
 
         /* uc first char after word boundary */
         SV **standard_case_val = hv_fetch(
-            standard_case, field, strlen(field), 1
+            standard_case, field, len, 1
         );
 
         if (!standard_case_val)
@@ -70,7 +72,7 @@ _standardize_field_name( char *field )
         if ( !SvOK(*standard_case_val) ) {
             bool word_boundary = true;
 
-            for (i = 0; i < strlen(orig); i++ ) {
+            for (i = 0; i < len; i++ ) {
                 if ( !isalpha( orig[i] ) ) {
                     word_boundary = true;
                     continue;
@@ -82,9 +84,9 @@ _standardize_field_name( char *field )
                 }
             }
 
-            *standard_case_val = newSVpv( orig, strlen(orig) );
+            *standard_case_val = newSVpv( orig, len );
         }
 
-        hv_store( MY_CXT.cache, orig, strlen(orig), newSVpv(field,strlen(field)), 0 );
+        hv_store( MY_CXT.cache, orig, len, newSVpv(field,len), 0 );
         RETVAL = field;
     OUTPUT: RETVAL
