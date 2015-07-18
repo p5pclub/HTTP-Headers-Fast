@@ -10,6 +10,8 @@
 
 typedef struct {
     HV *cache;
+    HV *standard_case;
+    SV **translate;
 } my_cxt_t;
 
 START_MY_CXT;
@@ -20,25 +22,29 @@ PROTOTYPES: DISABLE
 BOOT:
 {
     MY_CXT_INIT;
-    MY_CXT.cache = newHV();
+    MY_CXT.cache         = newHV();
+    MY_CXT.standard_case = get_hv( "HTTP::Headers::Fast::standard_case", 0 );
+    MY_CXT.translate     = hv_fetch(
+        gv_stashpvn( "HTTP::Headers::Fast", 19, 0 ),
+        "TRANSLATE_UNDERSCORE",
+        20,
+        0
+    );
 }
 
 char *
 _standardize_field_name( char *field )
     PREINIT:
         int i;
-        SV *TRANSLATE_UNDERSCORE = get_sv(
-            "HTTP::Headers::Fast::TRANSLATE_UNDERSCORE", 0
-        );
-        HV *standard_case = get_hv(
-            "HTTP::Headers::Fast::standard_case", 0
-        );
         SV **cache_field;
         char *orig;
         int len;
+        SV *TRANSLATE_UNDERSCORE;
         dMY_CXT;
     CODE:
         /* underscores to dashes */
+        TRANSLATE_UNDERSCORE = GvSV( *MY_CXT.translate );
+
         if (!TRANSLATE_UNDERSCORE)
             croak("$TRANSLATE_UNDERSCORE variable does not exist");
 
@@ -65,7 +71,7 @@ _standardize_field_name( char *field )
 
         /* uc first char after word boundary */
         SV **standard_case_val = hv_fetch(
-            standard_case, field, len, 1
+            MY_CXT.standard_case, field, len, 1
         );
 
         if (!standard_case_val)
