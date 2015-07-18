@@ -6,7 +6,7 @@
 
 #include <string.h>
 
-#define MY_CXT_KEY "HTTP::Headers::Fast::_guts" XS_VERSION
+#define MY_CXT_KEY "HTTP::Headers::Fast::XS::_guts" XS_VERSION
 
 typedef struct {
     HV *cache;
@@ -16,7 +16,7 @@ typedef struct {
 
 START_MY_CXT;
 
-MODULE = HTTP::Headers::Fast		PACKAGE = HTTP::Headers::Fast
+MODULE = HTTP::Headers::Fast::XS		PACKAGE = HTTP::Headers::Fast::XS
 PROTOTYPES: DISABLE
 
 BOOT:

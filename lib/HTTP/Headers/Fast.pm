@@ -3,15 +3,15 @@ use strict;
 use warnings;
 use 5.00800;
 use Carp ();
-use XSLoader;
 
 our $VERSION = '0.18';
-
 our $TRANSLATE_UNDERSCORE = 1;
 
 eval {
-    no warnings qw<redefine once>;
-    XSLoader::load( 'HTTP::Headers::Fast', $VERSION );
+    require XSLoader;
+    XSLoader::load( 'HTTP::Headers::Fast::XS', $VERSION );
+    *_standardize_field_name =
+        *HTTP::Headers::Fast::XS::_standardize_field_name;
 };
 
 # "Good Practice" order of HTTP message headers:
