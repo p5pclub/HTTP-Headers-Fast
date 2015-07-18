@@ -47,13 +47,9 @@ _standardize_field_name( char *field )
                     field[i] = '-';
 
         /* check the cache */
-        cache_field = hv_fetch( MY_CXT.cache, field, strlen(field), 1 );
-        if (!cache_field) {
-            croak("Cannot create cache for fields");
-        } else if ( SvOK(*cache_field) ) {
-            RETVAL = SvPV_nolen(*cache_field);
-            return;
-        }
+        cache_field = hv_fetch( MY_CXT.cache, field, strlen(field), 0 );
+        if ( cache_field && SvOK(*cache_field) )
+            XSRETURN_PV( SvPV_nolen(*cache_field) );
 
         /* make a copy to represent the original one */
         orig = (char *) malloc( strlen(field) );
@@ -89,7 +85,6 @@ _standardize_field_name( char *field )
             *standard_case_val = newSVpv( orig, strlen(orig) );
         }
 
-        sv_setpv( *cache_field, field );
-
+        hv_store( MY_CXT.cache, orig, strlen(orig), newSVpv(field,strlen(field)), 0 );
         RETVAL = field;
     OUTPUT: RETVAL
