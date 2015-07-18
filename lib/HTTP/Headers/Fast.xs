@@ -50,8 +50,10 @@ _standardize_field_name( char *field )
 
         /* check the cache */
         cache_field = hv_fetch( MY_CXT.cache, field, len, 0 );
-        if ( cache_field && SvOK(*cache_field) )
+        if ( cache_field && SvOK(*cache_field) ) {
             XSRETURN_PV( SvPV_nolen(*cache_field) );
+            return;
+        }
 
         /* make a copy to represent the original one */
         orig = (char *) malloc(len);
