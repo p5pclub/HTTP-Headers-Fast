@@ -73,7 +73,14 @@ _standardize_field_name( char *field )
             bool word_boundary = true;
 
             for (i = 0; i < len; i++ ) {
-                if ( !isalpha( orig[i] ) ) {
+                /* \w is basically A-Za-z0-9_ */
+                /* grep isWORDCHAR handy.c */
+                /* at least headers aren't in Unicode */
+                if (
+                     !isalpha( orig[i] )
+                  && !isdigit( orig[i] )
+                  && orig[i] != '_'
+                ) {
                     word_boundary = true;
                     continue;
                 }

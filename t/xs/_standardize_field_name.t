@@ -34,7 +34,7 @@ can_ok( HTTP::Headers::Fast::, '_standardize_field_name' );
 
     is(
         $HTTP::Headers::Fast::standard_case{'hello_world_'},
-        'Hello_World_',
+        'Hello_world_',
         'Set up standard_case in original header value correctly',
     );
 }
