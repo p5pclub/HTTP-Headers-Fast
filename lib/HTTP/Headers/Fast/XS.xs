@@ -103,5 +103,6 @@ _standardize_field_name( char *field )
         }
 
         hv_store( MY_CXT.cache, orig, len, newSVpv(field,len), 0 );
+        free(orig);
         RETVAL = field;
     OUTPUT: RETVAL
