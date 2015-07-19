@@ -4,12 +4,12 @@ use Test::More;
 
 BEGIN { use_ok('HTTP::Headers::Fast') }
 
-can_ok( HTTP::Headers::Fast::, '_standardize_field_name' );
+can_ok( HTTP::Headers::Fast::XS::, '_standardize_field_name' );
 
 {
     local $HTTP::Headers::Fast::TRANSLATE_UNDERSCORE = 1;
     is(
-        HTTP::Headers::Fast::_standardize_field_name('hello_world_'),
+        HTTP::Headers::Fast::XS::_standardize_field_name('hello_world_'),
         'hello-world-',
         'All underscores are converted to dashes',
     );
@@ -18,7 +18,7 @@ can_ok( HTTP::Headers::Fast::, '_standardize_field_name' );
 {
     local $HTTP::Headers::Fast::TRANSLATE_UNDERSCORE = 0;
     is(
-        HTTP::Headers::Fast::_standardize_field_name('hello_world_'),
+        HTTP::Headers::Fast::XS::_standardize_field_name('hello_world_'),
         'hello_world_',
         'Respect $TRANSLATE_UNDERCORE global',
     );
@@ -27,7 +27,7 @@ can_ok( HTTP::Headers::Fast::, '_standardize_field_name' );
 {
     local $HTTP::Headers::Fast::TRANSLATE_UNDERSCORE = 0;
     is(
-        HTTP::Headers::Fast::_standardize_field_name('Hello_WorlD_'),
+        HTTP::Headers::Fast::XS::_standardize_field_name('Hello_WorlD_'),
         'hello_world_',
         'Test that caching works (as much as we can)',
     );
