@@ -35,11 +35,13 @@ BOOT:
 char *
 _standardize_field_name( char *field )
     PREINIT:
-        int i;
-        SV **cache_field;
+        SV   **cache_field;
+        SV   *TRANSLATE_UNDERSCORE;
+        SV   **standard_case_val;
         char *orig;
-        int len;
-        SV *TRANSLATE_UNDERSCORE;
+        int  i;
+        int  len;
+        bool word_boundary;
         dMY_CXT;
     CODE:
         /* underscores to dashes */
@@ -63,14 +65,14 @@ _standardize_field_name( char *field )
 
         /* make a copy to represent the original one */
         orig = (char *) malloc(len);
-        strcpy( orig, field );
+        my_strlcpy( orig, field, len + 1 );
 
         /* lc */
         for ( i = 0; i < len; i++ )
             field[i] = tolower( field[i] );
 
         /* uc first char after word boundary */
-        SV **standard_case_val = hv_fetch(
+        standard_case_val = hv_fetch(
             MY_CXT.standard_case, field, len, 1
         );
 
@@ -78,17 +80,10 @@ _standardize_field_name( char *field )
             croak("hv_fetch() failed. This should not happen.");
 
         if ( !SvOK(*standard_case_val) ) {
-            bool word_boundary = true;
+            word_boundary = true;
 
             for (i = 0; i < len; i++ ) {
-                /* \w is basically A-Za-z0-9_ */
-                /* grep isWORDCHAR handy.c */
-                /* at least headers aren't in Unicode */
-                if (
-                     !isalpha( orig[i] )
-                  && !isdigit( orig[i] )
-                  && orig[i] != '_'
-                ) {
+                if ( ! isWORDCHAR( orig[i] ) ) {
                     word_boundary = true;
                     continue;
                 }
