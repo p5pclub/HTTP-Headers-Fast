@@ -5,8 +5,14 @@ use 5.00800;
 use Carp ();
 
 our $VERSION = '0.18';
-
 our $TRANSLATE_UNDERSCORE = 1;
+
+eval {
+    require XSLoader;
+    XSLoader::load( 'HTTP::Headers::Fast::XS', $VERSION );
+    *_standardize_field_name =
+        *HTTP::Headers::Fast::XS::_standardize_field_name;
+};
 
 # "Good Practice" order of HTTP message headers:
 #    - General-Headers
@@ -50,7 +56,7 @@ my @header_order =
 # Make alternative representations of @header_order.  This is used
 # for sorting and case matching.
 my %header_order;
-my %standard_case;
+our %standard_case;
 
 {
     my $i = 0;
