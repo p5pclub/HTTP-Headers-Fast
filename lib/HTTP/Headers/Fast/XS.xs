@@ -64,7 +64,7 @@ _standardize_field_name( char *field )
         }
 
         /* make a copy to represent the original one */
-        orig = (char *) malloc(len);
+        orig = (char *) alloca(len);
         my_strlcpy( orig, field, len + 1 );
 
         /* lc */
@@ -98,6 +98,5 @@ _standardize_field_name( char *field )
         }
 
         hv_store( MY_CXT.cache, orig, len, newSVpv(field,len), 0 );
-        free(orig);
         RETVAL = field;
     OUTPUT: RETVAL
