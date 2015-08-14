@@ -8,6 +8,14 @@ our $VERSION = '0.18';
 
 our $TRANSLATE_UNDERSCORE = 1;
 
+{
+    if ( ! defined $ENV{'PERL_HTTP_HEADERS_FAST_XS'} ||
+         $ENV{'PERL_HTTP_HEADERS_FAST_XS'}
+    ) {
+        eval { require HTTP::Headers::Fast::XS };
+    }
+}
+
 # "Good Practice" order of HTTP message headers:
 #    - General-Headers
 #    - Request-Headers
@@ -570,13 +578,18 @@ HTTP::Headers::Fast - faster implementation of HTTP::Headers
 
 =head1 DESCRIPTION
 
-HTTP::Headers::Fast is a perl class for parsing/writing HTTP headers.
+HTTP::Headers::Fast is a Perl class for parsing/writing HTTP headers.
 
 The interface is same as HTTP::Headers.
 
+HTTP::Headers::Fast supports an optional XS implementation too,
+L<HTTP::Headers::Fast::XS>. By default, it will try to load it. If
+you set the environment variable C<PERL_HTTP_HEADERS_FAST_XS> to
+false, it will force the Pure-Perl implementation.
+
 =head1 WHY YET ANOTHER ONE?
 
-HTTP::Headers is a very good. But I needed a faster implementation, fast  =)
+HTTP::Headers is a very good. But I needed a faster implementation, fast. =)
 
 =head1 ADDITIONAL METHODS
 
@@ -650,7 +663,7 @@ If you want HTTP::Headers::Fast to pretend like it's really HTTP::Headers, you c
     Tokuhiro Matsuno E<lt>tokuhirom@gmail.comE<gt>
     Daisuke Maki
 
-And HTTP::Headers' originally written by Gisle Aas.
+And HTTP::Headers is originally written by Gisle Aas.
 
 =head1 THANKS TO
 
